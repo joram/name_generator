@@ -20,16 +20,18 @@ with open("./17100147.csv", "r") as f:
                     female_data[name] = 0
                 female_data[name] += float(value)
 
-with open("./male_data.csv", "w") as f:
-    total = 0
+with open("./name_generator/data.go", "w") as f:
+    f.write("package name_generator\n\n")
+    f.write("var MaleNames = map[string]int{\n")
+    min_weight = min(male_data.values())
     for name, weight in male_data.items():
-        f.write(name + "," + str(weight) + "\n")
-        total += weight
-    print("MALE:", total)
+        weight = max(1, int(weight/min_weight))
+        f.write('\t"' + name + '": ' + str(weight) + ",\n")
+    f.write("}\n\n")
 
-with open("./female_data.csv", "w") as f:
-    total = 0
+    f.write("var FemaleNames = map[string]int{\n")
+    min_weight = min(female_data.values())
     for name, weight in female_data.items():
-        f.write(name + "," + str(weight) + "\n")
-        total += weight
-    print("FEMALE:", total)
+        weight = max(1, int(weight/min_weight))
+        f.write('\t"' + name + '": ' + str(weight) + ",\n")
+    f.write("}\n")

@@ -15,8 +15,8 @@ func (ng *NameGenerator) FemaleName(seed int64) string {
 
 func NewNameGenerator() *NameGenerator {
 	ng := &NameGenerator{
-		maleNames:   NewWeightedNameCollection("./name_generator/data/male_data.csv"),
-		femaleNames: NewWeightedNameCollection("./name_generator/data/female_data.csv"),
+		maleNames:   NewWeightedNameCollection(&MaleNames),
+		femaleNames: NewWeightedNameCollection(&FemaleNames),
 	}
 	return ng
 }

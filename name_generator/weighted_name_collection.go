@@ -1,10 +1,8 @@
 package name_generator
 
 import (
-	"encoding/csv"
 	"math/rand"
-	"os"
-	"strconv"
+	"sort"
 )
 
 type WeightedNameCollection struct {
@@ -19,20 +17,10 @@ func (ng *WeightedNameCollection) GetRandomName(seed int64) string {
 	return ng.names[index]
 }
 
-func NewWeightedNameCollection(filename string) *WeightedNameCollection {
+func NewWeightedNameCollection(data *map[string]int) *WeightedNameCollection {
 	ng := &WeightedNameCollection{
 		names:   []string{},
 		indices: []int{},
-	}
-
-	f, err := os.Open(filename)
-	if err != nil {
-		panic(err)
-	}
-	reader := csv.NewReader(f)
-	records, err := reader.ReadAll()
-	if err != nil {
-		panic(err)
 	}
 
 	type nameChance struct {
@@ -41,27 +29,29 @@ func NewWeightedNameCollection(filename string) *WeightedNameCollection {
 		percentage float64
 	}
 
-	nameChances := []nameChance{}
-	minPercentage := 100.0
-	for _, record := range records {
-		name := record[0]
-		percentage, err := strconv.ParseFloat(record[1], 64)
-		if err != nil {
-			panic(err)
-		}
+	names := []string{}
+	for name, _ := range *data {
+		names = append(names, name)
+	}
+	sort.Strings(names)
 
+	nameChances := []nameChance{}
+	setMinChance := false
+	minChance := 0
+	for _, name := range names {
+		chance := (*data)[name]
 		nameChances = append(nameChances, nameChance{
-			name:       name,
-			percentage: percentage,
+			name:    name,
+			chances: chance,
 		})
 
-		if percentage < minPercentage {
-			minPercentage = percentage
+		if !setMinChance || chance < minChance {
+			minChance = chance
+			setMinChance = true
 		}
 	}
 
 	for _, nameChance := range nameChances {
-		nameChance.chances = int(nameChance.percentage / minPercentage)
 		ng.names = append(ng.names, nameChance.name)
 		nameIndex := len(ng.names) - 1
 		for i := 0; i < nameChance.chances; i++ {
