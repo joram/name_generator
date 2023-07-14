@@ -34,25 +34,32 @@ with open("./surnames.csv", "r") as f:
 
 
 
-with open("./name_generator/data.go", "w") as f:
-    f.write("package name_generator\n\n")
+with open("./name_generator/data/male_names.go", "w") as f:
+    f.write("package data\n\n")
     f.write("var MaleNames = map[string]int{\n")
     min_weight = min(male_data.values())
     for name, weight in male_data.items():
         weight = max(1, int(weight/min_weight))
+        name = name.capitalize()
         f.write('\t"' + name + '": ' + str(weight) + ",\n")
-    f.write("}\n\n")
+    f.write("}\n")
 
+with open("./name_generator/data/female_names.go", "w") as f:
+    f.write("package data\n\n")
     f.write("var FemaleNames = map[string]int{\n")
     min_weight = min(female_data.values())
     for name, weight in female_data.items():
         weight = max(1, int(weight/min_weight))
+        name = name.capitalize()
         f.write('\t"' + name + '": ' + str(weight) + ",\n")
-    f.write("}\n\n")
+    f.write("}\n")
 
+with open("./name_generator/data/surnames.go", "w") as f:
+    f.write("package data\n\n")
     f.write("var Surnames = map[string]int{\n")
     min_weight = min(surnames.values())
     for name, weight in surnames.items():
         weight = max(1, int(weight/min_weight))
+        name = name.capitalize()
         f.write('\t"' + name + '": ' + str(weight) + ",\n")
     f.write("}\n")
